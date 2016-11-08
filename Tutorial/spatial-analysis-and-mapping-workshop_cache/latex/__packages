@@ -3,3 +3,9 @@ knitr
 sp
 rgdal
 caTools
+maptools
+foreign
+rjson
+rgeos
+UScensus2010
+UScensus2010county
