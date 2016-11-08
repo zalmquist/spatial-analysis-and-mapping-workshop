@@ -1,0 +1,9 @@
+unnamed-chunk-2	install.packages	maptools	rgeos
+unnamed-chunk-3	install.packages
+unnamed-chunk-4	install.packages
+unnamed-chunk-5	require
+unnamed-chunk-6	::	!	[[	==	$	dir.create	download.file	grep	if	is.null	list.files	paste	return	strsplit	tempfile	unzip
+unnamed-chunk-7	install.packages
+unnamed-chunk-8	$	image	length	library	read.gif
+unnamed-chunk-9	readZillow_NB
+unnamed-chunk-10	$	c	image	length	par	plot	seattle_nb	zillow_logo
