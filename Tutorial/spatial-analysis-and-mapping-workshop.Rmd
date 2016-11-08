@@ -31,8 +31,9 @@ This workshop will involve a large collection of R packages and will provide a b
 
 ```{r, eval=FALSE}
 install.packages("sp")
-install.packages(rgeos)
-install.packages(maptools)
+install.packages("rgeos")
+install.packages("maptools")
+install.packages("ggplot2")
 ```
 
 ### Recommended
