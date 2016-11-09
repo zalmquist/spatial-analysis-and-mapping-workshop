@@ -143,6 +143,7 @@ image(zillow_logo$image, col=zillow_logo$col, breaks=(0:length(zillow_logo$col))
 ```{r,cache=FALSE} 
 library(UScensus2010)
 library(ggplot2)
+library(dplyr)
 library(plyr)
 data(states)
 cont_states<-states[!(states$acronym%in%c("HI","AK")),]
@@ -158,6 +159,5 @@ ggplot() +
                color = "black", size = 0.25) + 
   coord_map()
 ```
-
 
 
