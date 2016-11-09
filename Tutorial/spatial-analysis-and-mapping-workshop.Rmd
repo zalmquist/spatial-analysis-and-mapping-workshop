@@ -34,6 +34,8 @@ install.packages("sp")
 install.packages("rgeos")
 install.packages("maptools")
 install.packages("ggplot2")
+install.packages("devtools")
+install.packages("plyr")
 ```
 
 ### Recommended
@@ -45,10 +47,16 @@ install.packages("rgdal")
 In this workshop we will use a series of different packages, including the US Census suite of software. The most recent versions are available <https://r-forge.r-project.org/R/?group_id=2022>. We will need only three of the packages:
 
 ```{r, eval=FALSE}
-install.packages("UScensus2010", repos="http://R-Forge.R-project.org")
 install.packages("UScensus2010county", repos="http://R-Forge.R-project.org")
 install.packages("UScensus2010tract", repos="http://R-Forge.R-project.org")
 ```
+
+Install via github using 'devtools' package because R-Forge is having problems due to R 3.3.0 upgrade.
+```{r, eval=FALSE}
+library(devtools)
+install_github("zalmquist/UScensus2010")
+```
+
 
 ### Load the US Census packages
 ```{r}
@@ -126,7 +134,30 @@ seattle_nb<-readZillow_NB(base_address,state,city)
 ```{r, fig.width = 4.5, fig.height = 4.5,fig.align='center'} 
 par(mfrow=c(1,1),mar=c(0, 0, 0, 0) + 0.1)
 plot(seattle_nb)
-par(fig=c(.25, 3.5, .4, 2.5)/10,new=TRUE)
+par(fig=c(.25, 3.3, .4, 2.5)/10,new=TRUE)
 image(zillow_logo$image, col=zillow_logo$col, breaks=(0:length(zillow_logo$col))-0.5, asp=.15,useRaster=TRUE,axes = FALSE)
 ```
+
+# Plot the US using ggplot
+
+```{r,cache=FALSE} 
+library(UScensus2010)
+library(ggplot2)
+library(plyr)
+data(states)
+cont_states<-states[!(states$acronym%in%c("HI","AK")),]
+cont_states@data$id <- rownames(cont_states@data)
+states.points = fortify(cont_states, region="id")
+states.df = join(states.points, cont_states@data, by="id")
+```
+
+```{r, fig.width = 4.5, fig.height = 4.5,fig.align='center'} 
+ggplot() +
+  geom_polygon(data = states.df, 
+               aes(x = long, y = lat, group = group, fill = pop1970-pop1960), 
+               color = "black", size = 0.25) + 
+  coord_map()
+```
+
+
 
