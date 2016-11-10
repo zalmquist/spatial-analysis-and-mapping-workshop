@@ -1,0 +1,335 @@
+---
+title: "Spatial Analysis and Mapping Workshop"
+author: "Zack W Almquist (University of Minnesota)"
+date: "November 9, 2016"
+output: beamer_presentation
+---
+
+```{r,include=FALSE}
+require(knitr)
+opts_chunk$set(echo=TRUE,
+               cache=TRUE, autodep=TRUE, cache.comments=FALSE,
+               message=FALSE, warning=FALSE,tidy=TRUE)
+options(width=60)
+```
+
+## R spatial data handling and GIS activities
+
+\begin{itemize}
+\item Roger Bivand's book \emph{Applied Spatial Data Analysis with R} 
+\item Contains tools for handling many (most?) different spatial data formats %ESRI shapefiles 
+\item Contains tools for managing standard GIS activities such as plotting and overlays
+\item Contains tools for for statistical spatial analysis
+\item Contains tools for reading shape and raster files
+\end{itemize}
+
+## The UScensus2000-suite of Packages
+
+\setbeamercovered{transparent}
+\begin{block}{UScensus packages in R}
+\begin{itemize}
+\item<1-> 13 packages
+\begin{itemize}
+\item UScensus1990\{blkgrp\}
+\item UScensus2000\{block, blockgroup, tract, cdp\}
+\item UScensus2010\{block, blockgroup, tract, county, cdp\}
+\end{itemize}
+\item<2-> 3 packages of helper functions
+\item<3-> 10 packages of polygon/shapefiles and demographic data
+\item<4-> All data from US Census Bureau's \alert{SF1} files and \alert{TigerLine Shapefiles}
+\end{itemize}
+\end{block}
+
+## Structure of the UScensus2000 Packages
+
+\begin{block}{}
+\tiny{
+\setlength{\unitlength}{.7cm}
+\begin{picture}(6,6)(-3,.5)
+
+\put(0,5){\framebox(4,1)[0,0]{UScensus2000}}
+\put(5,5){\framebox(4,1)[0,0]{UScensus2000add}}
+
+
+\put(2,4){\line(0,1){1}}
+\put(7,4){\line(0,1){1}}
+\put(-1,4){\line(1,0){11}}
+
+\put(-1,4){\vector(0,-1){1}}
+\put(2,4){\vector(0,-1){1}}
+\put(7,4){\vector(0,-1){1}}
+\put(10,4){\vector(0,-1){1}}
+
+\put(-2.2,1.9){\framebox(3.45,1)[0,0]{UScensus2000blk}}
+\put(1.4,1.9){\framebox(3.45,1)[0,0]{UScensus2000blkgrp}}
+\put(5,1.9){\framebox(3.45,1)[0,0]{UScensus2000tract}}
+\put(8.6,1.9){\framebox(3.45,1)[0,0]{UScensus2000cdp}}
+\end{picture}
+}
+\end{block}
+
+## Organization of the US Census
+\begin{block}{}
+\setlength{\unitlength}{.8cm}
+\begin{picture}(3,7)(-2,.2)
+
+\put(-1,6){\framebox(12,1)[0,0]{County}}
+\put(0,4){\framebox(10,1)[0,0]{Tract}}
+\put(1,2){\framebox(8,1)[0,0]{Block Group}}
+\put(3,0){\framebox(4,1)[0,0]{Block}}
+
+\put(5,1){\vector(0,1){1}}
+\put(5,3){\vector(0,1){1}}
+\put(5,5){\vector(0,1){1}}
+
+\end{picture}
+
+\vspace{.1in}
+
+\end{block}
+
+## Organization of the US Census
+
+\begin{center}
+\includegraphics[width=.7\linewidth]{figures/geography}
+\end{center}
+
+## Available Data
+
+\begin{block}{Via The Comprehensive R Archive Network
+(CRAN)\\ \url{http://cran.r-project.org/}}
+\begin{itemize}
+\item Tract (UScensus2000tract)
+\item Census Designated Place (UScensus2000cdp)
+\item UScensus2010
+\end{itemize}
+\end{block}
+
+## Available Data
+
+\begin{block}{Via R-Forge\\
+\url{https://r-forge.r-project.org/R/?group_id=2022}}
+\begin{itemize}
+\item Block, Block Group, Tract, County, CDP (UScensus2000 and UScensus2010)
+\end{itemize}
+\end{block}
+
+## Available Data
+\begin{block}{Via NCASD Lab\\ \url{http://lakshmi.calit2.uci.edu/census2000/}}
+\begin{itemize}
+\item Block (UScensus1990blkgrp)
+\item Block  (UScensus2000blk and UScensus2010blk)
+\end{itemize}
+\end{block}
+
+## Installation
+
+\tiny
+```{r, eval=FALSE}
+install.packages("UScensus2010", 
+                 repos="http://R-Forge.R-project.org")
+install.packages("UScensus2010county", 
+                 repos="http://R-Forge.R-project.org")
+install.packages("UScensus2010tract", 
+                 repos="http://R-Forge.R-project.org")
+install.packages("UScensus2010cdp", 
+                 repos="http://R-Forge.R-project.org")
+```
+
+## Structure of the UScensus2000 Data-Packages
+
+\begin{block}{}
+ \setlength{\unitlength}{.8cm}
+\begin{picture}(6,6)(-1,.2)
+\put(1.9,5){\framebox(7.6,1)[0,0]{Package (e.g., UScensus2000tract)}}
+\put(1.9,3){\framebox(7.5,1)[0,0]{State (e.g., california.tract)}}
+\put(-.5,.4){\framebox(13,1.5)[0,0]{data and polygons}}
+\put(0,.6){(e.g., california.tract@data or california.tract@polygons)}
+
+\put(5.5,3){\vector(0,-1){1}}
+\put(5.5,5){\vector(0,-1){1}}
+\end{picture}
+\end{block}
+\vspace{-.2in}
+\begin{block}{}
+\begin{itemize}
+\item All data is stored as \alert{SpatialPolygonsDataframe} object
+\item \alert{data} is a data.frame object with {\bf ID} (factors) and {\bf demographic} (numeric) values 
+\item \alert{polygons} is a list of the spatial data
+\end{itemize}
+\end{block}
+
+## Loading the Data
+\tiny
+```{r,cache=FALSE}
+ library(UScensus2000)
+ data(california.tract)
+ summary(as(california.tract,"SpatialPolygons"))
+```
+
+## Loading the Data
+\tiny
+```{r}
+ names(california.tract)
+```
+
+## Help
+
+```{r,eval=FALSE}
+help(california.tract)
+```
+## Help
+
+\includegraphics[width=.65\linewidth]{figures/rhelpss}
+
+## Examples
+
+\begin{center}
+Useful Functions in the UScensus2000 Package
+\end{center}
+
+## UScensus2000
+
+\begin{block}{Functions}
+\begin{center}
+\begin{itemize}
+\item choropleth()
+\item county()
+\item MSA()
+\item city()
+\item poly.clipper()
+\item demographics()
+\end{itemize}
+\end{center}
+\end{block}
+
+## Choropleth Maps
+\tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center',cache=FALSE}
+UScensus2000::choropleth(california.tract, main="2000 US Census Tracts \n California", border="transparent")
+```
+
+## county
+
+\tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center'}
+la.county <- county(name="los angeles",
+                      state="ca", level="tract")
+plot(la.county)
+ ```
+ 
+ ## MSA
+
+\tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center'}
+losangeles.msa<-MSA(msaname="Los Angeles",
+                    state="CA",level="tract")
+plot(losangeles.msa,border=rgb(0,0,0,.4))
+ ```
+ 
+## City
+ 
+ \tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center'}
+ losangeles<-city(name="los angeles",
+                    state="ca")
+plot(losangeles)
+ ```
+ 
+ ## demographics
+ 
+ \tiny
+```{r}
+laMSAarea<-demographics(dem=c("pop2000","white","black"),
+                        "CA",level="msa",msaname="Los Angeles")
+laMSAarea
+ ```
+ 
+ ## demographics
+ \tiny
+ ```{r}
+ca.cdp<-demographics(dem=c("pop2000","white","black",
+        "hh.units","hh.vacant"), "CA",level="cdp") 
+ ##Alphabetic order the first 10 CDPs 
+ca.cdp[order(rownames(ca.cdp))[1:10],]
+```
+
+## rgdal
+
+\begin{itemize}
+\item Requires GDAL and proj4 packages (these must be installed at the OS level)
+\item A it of a pain, but worth it!
+\item rgdal allows one to read in ESRI shape files
+\item rgdal allows one to re-project spatial data 
+\item<2> Let's do an example!
+\end{itemize}
+
+## rgdal
+
+\tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center',cache=FALSE}
+library(rgdal)
+UScounty<-readOGR(dsn="data/co99_d00_shp",layer="co99_d00",stringsAsFactors=FALSE)
+proj4string(UScounty)<-" +proj=longlat +ellps=GRS80 +datum=NAD83 +no_defs +towgs84=0,0,0"
+```
+ 
+
+## rgdal
+
+\tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center'}
+plot(UScounty)
+```
+ 
+## rgdal: Translate to an equal area projection
+
+\tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center'}
+UScounty<-spTransform(UScounty,CRS(
+" +proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 
++towgs84=0,0,0,0,0,0,0 +units=m +no_defs"))
+```
+
+## rgdal
+
+\tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center',cache=FALSE}
+library(UScensus2010)
+data(countyfips)
+UScounty$fips<-paste(UScounty$STATE,UScounty$COUNTY,sep="")
+ah.fips<-unique(substr(countyfips$fips[countyfips$statename%in%c("hawaii","alaska")],1,2))
+conUS<-UScounty[!UScounty$STATE%in%ah.fips,]
+alaska<-UScounty[UScounty$STATE==ah.fips[1],]
+hawaii<-UScounty[UScounty$STATE==ah.fips[2],]
+```
+
+## rgdal
+
+\tiny
+```{r,fig.width = 5, fig.height = 5,fig.align='center'}
+par(mar=c(1, 1, 0, 0) + 0.1,mgp=c(0, 0.2,0),tcl=-.2)
+plot(conUS,border=rgb(0,0,0,.2),col=rgb(0,0,0,.2))
+par(fig=c(.25, 2, .2, 2.1)/10,new=TRUE,mgp=c(0,0.2,0),tcl=-.2)
+plot(alaska,border=rgb(0,0,0,.3),col=rgb(0,0,0,.2))
+box()
+par(fig=c(2.25, 4, .2, 2.1)/10,new=TRUE,mgp=c(0,0.2,0),tcl=-.2)
+plot(hawaii,border=rgb(0,0,0,.3),col=rgb(0,0,0,.05))
+box()
+```
+
+## US Census API
+
+\begin{itemize}
+\item Access to US Demographics SF1, SF3 (1990, 2000) and ACS (2010)
+\item Much More Too!!
+\item \url{http://www.census.gov/data/developers/data-sets.html}
+\item Requires User Key (\url{http://api.census.gov/data/key_signup.html})
+\end{itemize}
+
+## Tutorials
+
+- [spatial-analysis-and-mapping-workshop.pdf](https://github.com/zalmquist/spatial-analysis-and-mapping-workshop/tree/master/Tutorial)
+- [Tutorial_ACS.pdf](https://github.com/zalmquist/spatial-analysis-and-mapping-workshop/tree/master/ACS_Example)
+- [WorkBook.pdf](https://github.com/zalmquist/spatial-analysis-and-mapping-workshop/tree/master/WorkBook)
+
+

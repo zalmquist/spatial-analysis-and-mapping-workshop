@@ -1,0 +1,12 @@
+base
+knitr
+sp
+maptools
+rgeos
+foreign
+UScensus2000tract
+UScensus2000cdp
+UScensus2000
+rgdal
+rjson
+UScensus2010
