@@ -84,7 +84,7 @@ WA_Census_Spatial.df = join(WA_Census_Spatial.points, WA_Census_Spatial@data, by
 ggplot() +
   geom_polygon(data = WA_Census_Spatial.df, 
                aes(x = long, y = lat, group = group, fill = B06009_005E ), 
-               color = "black", size = 0.25) + coord_map()+ggtitle("Bachelor Degree Holders, 2014")
+               color = "black", size = 0.25) + coord_map()+ggtitle("Bachelor Degree Holders, 2010")
 ```
 
 
@@ -107,7 +107,7 @@ ggplot() +
   geom_polygon(data = WA_Census_Spatial.df, 
                aes(x = long, y = lat, group = group, fill = B06009_005E ), 
                color = NA ,size = 0.1) + coord_map()+
-               ggtitle("Bachelor Degree Holders, 2014")+
+               ggtitle("Bachelor Degree Holders, 2010")+
                 guides(fill = guide_legend(title = "# Degree Holders", title.position = "top"))
 ```
 
